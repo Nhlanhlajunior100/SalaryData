@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/Nhlan/Desktop/Files/Data Analytics Projects/archive/SalaryData.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="150"/><column_width id="3" width="1390"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,11:mainSalary Data"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Salary Data" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="6" mode="1"/></sort><column_widths><column index="1" value="61"/><column index="2" value="86"/><column index="3" value="165"/><column index="4" value="300"/><column index="5" value="200"/><column index="6" value="76"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes><y_axis name="" line_style="0" point_shape="0" colour="#000000" active="0"/><y_axis name="Salary" line_style="1" point_shape="5" colour="#004586" active="0"/><y2_axis name="" line_style="0" point_shape="0" colour="#000000" active="0"/><y2_axis name="Salary" line_style="1" point_shape="5" colour="#ff420e" active="0"/></plot_y_axes><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">/* Investigating salary data for various professions and their relations to 
+age, gender, education level, and years of experience
+---------------------------------------------------------------------------
+Author: Nhlanhla Hlengane
+Date: 07/03/2023
+*/ 
+
+-- What education group earns the highest salary?
+-- Results are skewed because the dataset contains much more bachelor's graduades than other postgrad qualifications
+-- Rather check for Average salary per qualification group
+-- Average salary increases with qualifications
+-- Gotta get my PhD!!!
+SELECT EducationLevel, round(avg(Salary),2) AS [Average Salary],COUNT(EducationLevel) AS [Number of Graduates]
+FROM [Salary Data]
+WHERE EducationLevel NOT NULL
+GROUP BY EducationLevel
+ORDER BY [Average Salary] DESC
+
+
+--What Age group earns the highest salary?
+-- Average salary increases with age
+SELECT Age, round(avg(Salary),2) AS [Average Salary],COUNT(Age) AS [Number of Graduates]
+FROM [Salary Data]
+WHERE  Age NOT NULL
+GROUP BY Age
+ORDER BY [Average Salary] DESC
+
+-- Which Jobs pay the most?
+SELECT JobTitle,avg(Salary) AS [Average Salary], Count(*) AS [Number of Employees]
+FROM [Salary Data]
+WHERE JobTitle NOT NULL
+GROUP BY JobTitle
+ORDER BY [Average Salary] DESC
+
+
+--What are typical jobs for PhD graduates
+-- There are definitely advantages to further studies!
+SELECT EducationLevel, JobTitle, Salary, YearsofExperience, Count(*) AS [Number of Employees]
+FROM [Salary Data]
+WHERE EducationLevel = 'PhD' 
+GROUP BY EducationLevel,JobTitle,Salary
+ORDER BY EducationLevel, Salary
+
+--What are typical jobs for Masters graduates
+SELECT EducationLevel, JobTitle, Salary, YearsofExperience, Count(*) AS [Number of Employees]
+FROM [Salary Data]
+WHERE EducationLevel = 'Master''s' 
+GROUP BY EducationLevel,JobTitle,Salary
+ORDER BY EducationLevel, Salary
+
+--What are typical jobs for Bachelor's graduates
+SELECT EducationLevel, JobTitle, Salary, YearsofExperience, Count(*) AS [Number of Employees]
+FROM [Salary Data]
+WHERE EducationLevel = 'Bachelor''s' 
+GROUP BY EducationLevel,JobTitle--,Salary
+ORDER BY Salary DESC
+
+-- Gender comparisions
+-- How many people of different genders are employed
+SELECT Gender, Count(*) As [Number of Employeees]
+From [Salary Data]
+WHERE Gender IS NOT NULL
+GROUP By Gender
+
+-- who earns more on average
+SELECT Gender, avg(Salary) as [Average Salary]
+FROM [Salary Data]
+WHERE Gender IS NOT NULL
+GROUP By Gender
+
+-- What jobs are typical of women
+SELECT Gender, JobTitle, Salary, Count(*) AS [Number of Workers]
+FROM [Salary Data]
+WHERE Gender = 'Female'
+Group By Gender,JobTitle
+
+-- What jobs are typical of men
+SELECT Gender, JobTitle, Salary, Count(*) AS [Number of Workers]
+FROM [Salary Data]
+WHERE Gender = 'Male'
+Group By Gender,JobTitle
+
+-- How far do different genders typically study
+SELECT Gender, EducationLevel, Round(avg(Salary),2) AS [Average Salary], Count(*)
+FROM [Salary Data]
+WHERE Gender IS NOT NULL
+GROUP BY Gender, EducationLevel
+
+-- Who has a longer career? Find the average age of each employee
+SELECT Gender, avg(Age) AS [Average Employee Age]
+FROM [Salary Data]
+WHERE Age IS NOT NULL
+GROUP BY  Gender
+
+
+-- Check age difference in detail
+SELECT Gender, Count(*) AS [Number of Female Employees aged 40 and above]
+FROM [Salary Data]
+WHERE Gender = 'Female' AND Age&gt;=40
+
+SELECT Gender, Count(*) AS [Number of Male Employees aged 40 and above]
+FROM [Salary Data]
+WHERE Gender = 'Male' AND Age&gt;=40
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
